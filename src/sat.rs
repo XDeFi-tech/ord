@@ -5,62 +5,62 @@ use super::*;
 pub struct Sat(pub u64);
 
 impl Sat {
-  pub(crate) const LAST: Self = Self(Self::SUPPLY - 1);
-  pub(crate) const SUPPLY: u64 = 2099999997690000;
+  pub const LAST: Self = Self(Self::SUPPLY - 1);
+  pub const SUPPLY: u64 = 2099999997690000;
 
-  pub(crate) fn n(self) -> u64 {
+  pub fn n(self) -> u64 {
     self.0
   }
 
-  pub(crate) fn degree(self) -> Degree {
+  pub fn degree(self) -> Degree {
     self.into()
   }
 
-  pub(crate) fn height(self) -> Height {
+  pub fn height(self) -> Height {
     self.epoch().starting_height() + self.epoch_position() / self.epoch().subsidy()
   }
 
-  pub(crate) fn cycle(self) -> u64 {
+  pub fn cycle(self) -> u64 {
     Epoch::from(self).0 / CYCLE_EPOCHS
   }
 
-  pub(crate) fn percentile(self) -> String {
+  pub fn percentile(self) -> String {
     format!("{}%", (self.0 as f64 / Self::LAST.0 as f64) * 100.0)
   }
 
-  pub(crate) fn epoch(self) -> Epoch {
+  pub fn epoch(self) -> Epoch {
     self.into()
   }
 
-  pub(crate) fn period(self) -> u64 {
+  pub fn period(self) -> u64 {
     self.height().n() / DIFFCHANGE_INTERVAL
   }
 
-  pub(crate) fn third(self) -> u64 {
+  pub fn third(self) -> u64 {
     self.epoch_position() % self.epoch().subsidy()
   }
 
-  pub(crate) fn epoch_position(self) -> u64 {
+  pub fn epoch_position(self) -> u64 {
     self.0 - self.epoch().starting_sat().0
   }
 
-  pub(crate) fn decimal(self) -> Decimal {
+  pub fn decimal(self) -> Decimal {
     self.into()
   }
 
-  pub(crate) fn rarity(self) -> Rarity {
+  pub fn rarity(self) -> Rarity {
     self.into()
   }
 
   /// `Sat::rarity` is expensive and is called frequently when indexing.
   /// Sat::is_common only checks if self is `Rarity::Common` but is
   /// much faster.
-  pub(crate) fn is_common(self) -> bool {
+  pub fn is_common(self) -> bool {
     let epoch = self.epoch();
     (self.0 - epoch.starting_sat().0) % epoch.subsidy() != 0
   }
 
-  pub(crate) fn name(self) -> String {
+  pub fn name(self) -> String {
     let mut x = Self::SUPPLY - self.0;
     let mut name = String::new();
     while x > 0 {

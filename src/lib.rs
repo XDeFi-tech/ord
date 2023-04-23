@@ -15,17 +15,10 @@ use {
     arguments::Arguments,
     blocktime::Blocktime,
     config::Config,
-    decimal::Decimal,
-    degree::Degree,
     deserialize_from_str::DeserializeFromStr,
-    epoch::Epoch,
-    height::Height,
     index::{Index, List},
-    inscription::Inscription,
-    inscription_id::InscriptionId,
     media::Media,
     options::Options,
-    outgoing::Outgoing,
     representation::Representation,
     subcommand::Subcommand,
     tally::Tally,
@@ -73,16 +66,27 @@ use {
 };
 
 pub use crate::{
-  fee_rate::FeeRate, object::Object, rarity::Rarity, sat::Sat, sat_point::SatPoint,
+  decimal::Decimal,
+  degree::Degree,
+  epoch::Epoch,
+  fee_rate::FeeRate,
+  height::Height,
+  inscription::{Inscription, InscriptionError, InscriptionParser},
+  inscription_id::{InscriptionId, ParseError},
+  object::Object,
+  rarity::Rarity,
+  sat::Sat,
+  sat_point::SatPoint,
+  outgoing::Outgoing,
   subcommand::wallet::transaction_builder::TransactionBuilder,
 };
 
 #[cfg(test)]
 #[macro_use]
-mod test;
+pub mod test;
 
 #[cfg(test)]
-use self::test::*;
+use crate::test::*;
 
 macro_rules! tprintln {
     ($($arg:tt)*) => {
@@ -123,10 +127,10 @@ mod wallet;
 
 type Result<T = (), E = Error> = std::result::Result<T, E>;
 
-const DIFFCHANGE_INTERVAL: u64 = bitcoin::blockdata::constants::DIFFCHANGE_INTERVAL as u64;
-const SUBSIDY_HALVING_INTERVAL: u64 =
+pub const DIFFCHANGE_INTERVAL: u64 = bitcoin::blockdata::constants::DIFFCHANGE_INTERVAL as u64;
+pub const SUBSIDY_HALVING_INTERVAL: u64 =
   bitcoin::blockdata::constants::SUBSIDY_HALVING_INTERVAL as u64;
-const CYCLE_EPOCHS: u64 = 6;
+pub const CYCLE_EPOCHS: u64 = 6;
 
 static SHUTTING_DOWN: AtomicBool = AtomicBool::new(false);
 static LISTENERS: Mutex<Vec<axum_server::Handle>> = Mutex::new(Vec::new());
